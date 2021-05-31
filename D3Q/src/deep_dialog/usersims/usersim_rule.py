@@ -69,12 +69,11 @@ class RuleSimulator(UserSimulator):
     def _sample_action(self):
         """ randomly sample a start action based on user goal """
 
-        # add list() in random.choice
         self.state['diaact'] = random.choice(list(dialog_config.start_dia_acts.keys()))
 
         # "sample" informed slots
         if len(self.goal['inform_slots']) > 0:
-            known_slot = random.choice(self.goal['inform_slots'].keys())
+            known_slot = random.choice(list(self.goal['inform_slots'].keys()))
             self.state['inform_slots'][known_slot] = self.goal['inform_slots'][known_slot]
 
             if 'moviename' in self.goal['inform_slots'].keys():  # 'moviename' must appear in the first user turn
