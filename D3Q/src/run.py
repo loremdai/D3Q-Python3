@@ -161,14 +161,6 @@ def ResetParams(train_model_type):
             params[arg] = getattr(args, arg)
             # f.write("{}: {}\n".format(arg, str(getattr(args, arg))))
         f.close()
-
-def save_to_file(content,originPath):
-    origin_str = os.path.splitext(originPath)
-    destiPath = origin_str[0] + ".json"
-    with open(destiPath, 'w') as output:
-        f = content
-        json.dump(f, output, indent=4)
-    return output
 # </editor-fold>
 
 max_turn = params['max_turn']
