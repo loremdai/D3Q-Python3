@@ -4,7 +4,7 @@ Created on May 17, 2016
 @author: xiul, t-zalipt
 """
 
-from agent import Agent
+from .agent import Agent
 
 
 class AgentCmd(Agent):

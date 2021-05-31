@@ -17,7 +17,7 @@ import pickle
 import numpy as np
 
 from deep_dialog import dialog_config
-from agent import Agent
+from .agent import Agent
 from deep_dialog.qlearning import DQN
 
 
