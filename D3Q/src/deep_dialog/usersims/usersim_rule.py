@@ -1,12 +1,9 @@
 """
 Created on May 14, 2016
-
 a rule-based user simulator
-
 -- user_goals_first_turn_template.revised.v1.p: all goals
 -- user_goals_first_turn_template.part.movie.v1.p: moviename in goal.inform_slots
 -- user_goals_first_turn_template.part.nomovie.v1.p: no moviename in goal.inform_slots
-
 @author: xiul, t-zalipt
 """
 
@@ -38,7 +35,7 @@ class RuleSimulator(UserSimulator):
         self.learning_phase = params['learning_phase']
 
     def initialize_episode(self):
-        """ Initialize a new episode (dialog) 
+        """ Initialize a new episode (dialog)
         state['history_slots']: keeps all the informed_slots
         state['rest_slots']: keep all the slots (which is still in the stack yet)
         """
@@ -63,7 +60,7 @@ class RuleSimulator(UserSimulator):
 
         # sample first action
         user_action = self._sample_action()
-        assert (self.episode_over != 1), ' but we just started'
+        assert (self.episode_over != 1, ' but we just started')
         return user_action
 
     def _sample_action(self):
@@ -150,7 +147,7 @@ class RuleSimulator(UserSimulator):
 
         intent_err_sample = random.random()
         if intent_err_sample < self.intent_err_probability:  # add noise for intent level
-            user_action['diaact'] = random.choice(self.act_set.keys())
+            user_action['diaact'] = random.choice(list(self.act_set.keys()))
 
     def debug_falk_goal(self):
         """ Debug function: build a fake goal mannually (Can be moved in future) """
@@ -339,7 +336,6 @@ class RuleSimulator(UserSimulator):
 
     def response_inform(self, system_action):
         """ Response for Inform (System Action) """
-
         if 'taskcomplete' in system_action[
             'inform_slots'].keys():  # check all the constraints from agents with user goal
             self.state['diaact'] = "thanks"
