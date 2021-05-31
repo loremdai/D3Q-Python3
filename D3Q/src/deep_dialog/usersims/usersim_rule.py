@@ -69,6 +69,7 @@ class RuleSimulator(UserSimulator):
     def _sample_action(self):
         """ randomly sample a start action based on user goal """
 
+        # add list() in random.choice
         self.state['diaact'] = random.choice(list(dialog_config.start_dia_acts.keys()))
 
         # "sample" informed slots
