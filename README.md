@@ -1,1 +1,1 @@
-# d3q-py3
+# D3Q-Python3
