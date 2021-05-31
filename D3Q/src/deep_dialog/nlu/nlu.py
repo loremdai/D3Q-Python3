@@ -1,6 +1,5 @@
 '''
 Created on Jul 13, 2016
-
 @author: xiul
 '''
 
@@ -20,6 +19,7 @@ class nlu:
         """ generate the Dia-Act with NLU model """
 
         if len(annot) > 0:
+            # 過濾字符串結尾的標點符號。
             tmp_annot = annot.strip('.').strip('?').strip(',').strip('!')
 
             rep = self.parse_str_to_vector(tmp_annot)
@@ -47,8 +47,9 @@ class nlu:
     def load_nlu_model(self, model_path):
         """ load the trained NLU model """
 
-        # model_params = pickle.load(open(model_path))
         model_params = pickle.load(open(model_path, 'rb'), encoding='latin1')
+
+        # model_params = pickle.load(open(model_path, 'rb'))
 
         hidden_size = model_params['model']['Wd'].shape[0]
         output_size = model_params['model']['Wd'].shape[1]
@@ -89,6 +90,7 @@ class nlu:
         rep['raw_seq'] = string
         return rep
 
+    # intent vector to complete slot filling
     def parse_nlu_to_diaact(self, nlu_vector, string):
         """ Parse BIO and Intent into Dia-Act """
 
