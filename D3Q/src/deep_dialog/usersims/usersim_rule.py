@@ -275,7 +275,7 @@ class RuleSimulator(UserSimulator):
         """ Response for Request (System Action) """
 
         if len(system_action['request_slots'].keys()) > 0:
-            slot = system_action['request_slots'].keys()[0]  # only one slot
+            slot = list(system_action['request_slots'].keys())[0]  # only one slot
             if slot in self.goal[
                 'inform_slots'].keys():  # request slot in user's constraints  #and slot not in self.state['request_slots'].keys():
                 self.state['inform_slots'][slot] = self.goal['inform_slots'][slot]
