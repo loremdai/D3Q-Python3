@@ -1,9 +1,6 @@
 '''
 Created on Oct 17, 2016
-
 --dia_act_nl_pairs.v6.json: agt and usr have their own NL.
-
-
 @author: xiul
 '''
 
@@ -55,7 +52,7 @@ class nlg:
         # remove I do not care slot in task(complete)
         if dia_act['diaact'] == 'inform' and 'taskcomplete' in dia_act['inform_slots'].keys() and \
                 dia_act['inform_slots']['taskcomplete'] != dialog_config.NO_VALUE_MATCH:
-            inform_slot_set = dia_act['inform_slots'].keys()
+            inform_slot_set = list(dia_act['inform_slots'].keys())
             for slot in inform_slot_set:
                 if dia_act['inform_slots'][slot] == dialog_config.I_DO_NOT_CARE: del dia_act['inform_slots'][slot]
 
@@ -136,6 +133,7 @@ class nlg:
         """ load the trained NLG model """
 
         model_params = pickle.load(open(model_path, 'rb'), encoding='latin1')
+        # pickle.load(open(model_path)) unused!
 
         hidden_size = model_params['model']['Wd'].shape[0]
         output_size = model_params['model']['Wd'].shape[1]
