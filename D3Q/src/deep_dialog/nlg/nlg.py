@@ -168,10 +168,10 @@ class nlg:
                 break
             elif slot_val == dialog_config.I_DO_NOT_CARE:
                 counter += 1
-                sentence = sentence.replace('$' + slot + '$', '', 1)
+                sentence = sentence.replace('$' + str(slot) + '$', '', 1)
                 continue
 
-            sentence = sentence.replace('$' + slot + '$', slot_val, 1)
+            sentence = sentence.replace('$' + str(slot) + '$', str(slot_val), 1)
 
         if counter > 0 and counter == len(dia_act['inform_slots']):
             sentence = dialog_config.I_DO_NOT_CARE
