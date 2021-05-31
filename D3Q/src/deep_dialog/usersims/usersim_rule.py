@@ -247,7 +247,7 @@ class RuleSimulator(UserSimulator):
         self.episode_over = True
         self.dialog_status = dialog_config.SUCCESS_DIALOG
 
-        request_slot_set = copy.deepcopy(self.state['request_slots'].keys())
+        request_slot_set = copy.deepcopy(list(self.state['request_slots'].keys()))
         if 'ticket' in request_slot_set:
             request_slot_set.remove('ticket')
         rest_slot_set = copy.deepcopy(self.state['rest_slots'])
