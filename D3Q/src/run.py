@@ -208,7 +208,7 @@ movie_dictionary = pickle.load(open(dict_path, 'rb'))
 
 # <editor-fold desc="Load Movie KB">
 movie_kb_path = convertFile(params['movie_kb_path'])
-movie_kb = pickle.load(open(movie_kb_path, 'rb'))
+movie_kb = pickle.load(open(movie_kb_path, 'rb'), encoding='utf-8')
 # </editor-fold>
 
 
