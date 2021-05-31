@@ -134,6 +134,43 @@ if __name__ == "__main__":
     print('Dialog Parameters: ')
     print(json.dumps(params, indent=2))
 
+
+# <editor-fold desc="Auxiliary Functions">
+# Auxiliary Functions
+def convertFile(originPath):
+    origin_str = os.path.splitext(originPath)
+    destiPath = origin_str[0] + "_new_" + origin_str[1]
+    outsize = 0
+    with open(originPath, 'rb') as f:
+        content = f.read()
+        with open(destiPath,'wb') as output:
+            print("writing to: ", destiPath)
+            for line in content.splitlines():
+                outsize += len(line) + 1
+                output.write(line + str.encode('\n'))
+    print("successfully! ")
+    return destiPath
+
+def ResetParams(train_model_type):
+    old_model_path = './deep_dialog/old_checkpoints/' + train_model_type + '/'
+    with open(os.path.join(old_model_path, "model_config"), "r") as f:
+        for arg in vars(args):
+            value = getattr(args, arg)
+            print(arg,type(value),getattr(args, arg))
+
+            params[arg] = getattr(args, arg)
+            # f.write("{}: {}\n".format(arg, str(getattr(args, arg))))
+        f.close()
+
+def save_to_file(content,originPath):
+    origin_str = os.path.splitext(originPath)
+    destiPath = origin_str[0] + ".json"
+    with open(destiPath, 'w') as output:
+        f = content
+        json.dump(f, output, indent=4)
+    return output
+# </editor-fold>
+
 max_turn = params['max_turn']
 num_episodes = params['episodes']
 agt = params['agt']  # the agent id
@@ -148,7 +185,7 @@ random.seed(seed)
 
 # <editor-fold desc="Load and Split Goal Sets">
 # load goal file
-goal_file_path = params['goal_file_path']
+goal_file_path = convertFile(params['goal_file_path'])
 all_goal_set = pickle.load(open(goal_file_path, 'rb'))  # load the user goals from .p file
 
 # split goal set
@@ -164,13 +201,13 @@ for u_goal_id, u_goal in enumerate(all_goal_set):
 
 
 # <editor-fold desc="Load Movie Dictionary">
-dict_path = params['dict_path']
+dict_path = convertFile(params['dict_path'])
 movie_dictionary = pickle.load(open(dict_path, 'rb'))
 # </editor-fold>
 
 
 # <editor-fold desc="Load Movie KB">
-movie_kb_path = params['movie_kb_path']
+movie_kb_path = convertFile(params['movie_kb_path'])
 movie_kb = pickle.load(open(movie_kb_path, 'rb'))
 # </editor-fold>
 
@@ -293,7 +330,7 @@ else:
 
 # <editor-fold desc="Load trained NLU model">
 ########## Load trained NLU model ###########
-nlg_model_path = params['nlg_model_path']
+nlg_model_path =  convertFile(params['nlg_model_path'])
 diaact_nl_pairs = params['diaact_nl_pairs']
 nlg_model = nlg()
 nlg_model.load_nlg_model(nlg_model_path)
@@ -307,7 +344,7 @@ user_sim_planning.set_nlg_model(nlg_model)
 
 # <editor-fold desc="Load trained NLG model">
 ########## Load trained NLG model ##########
-nlu_model_path = params['nlu_model_path']
+nlu_model_path = convertFile(params['nlu_model_path'])
 nlu_model = nlu()
 nlu_model.load_nlu_model(nlu_model_path)
 
