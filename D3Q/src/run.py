@@ -143,7 +143,7 @@ def convertFile(originPath):
     outsize = 0
     with open(originPath, 'rb') as f:
         content = f.read()
-        with open(destiPath,'wb') as output:
+        with open(destiPath, 'wb') as output:
             print("writing to: ", destiPath)
             for line in content.splitlines():
                 outsize += len(line) + 1
@@ -151,16 +151,19 @@ def convertFile(originPath):
     print("successfully! ")
     return destiPath
 
+
 def ResetParams(train_model_type):
     old_model_path = './deep_dialog/old_checkpoints/' + train_model_type + '/'
     with open(os.path.join(old_model_path, "model_config"), "r") as f:
         for arg in vars(args):
             value = getattr(args, arg)
-            print(arg,type(value),getattr(args, arg))
+            print(arg, type(value), getattr(args, arg))
 
             params[arg] = getattr(args, arg)
             # f.write("{}: {}\n".format(arg, str(getattr(args, arg))))
         f.close()
+
+
 # </editor-fold>
 
 max_turn = params['max_turn']
@@ -322,7 +325,7 @@ else:
 
 # <editor-fold desc="Load trained NLU model">
 ########## Load trained NLU model ###########
-nlg_model_path =  convertFile(params['nlg_model_path'])
+nlg_model_path = convertFile(params['nlg_model_path'])
 diaact_nl_pairs = params['diaact_nl_pairs']
 nlg_model = nlg()
 nlg_model.load_nlg_model(nlg_model_path)
@@ -447,9 +450,9 @@ def warm_start_simulation():
             user_sim_planning.train(batch_size, 5)
     pickle.dump(agent.experience_replay_pool, open('warm_up_experience_pool_seed%d_r%d.pkl' % (seed, successes), 'wb'))
     pickle.dump(agent.experience_replay_pool_from_model,
-                 open('warm_up_experience_pool_seed%d_r%d_sb.pkl' % (seed, successes), 'wb'))
+                open('warm_up_experience_pool_seed%d_r%d_sb.pkl' % (seed, successes), 'wb'))
     pickle.dump(user_sim_planning.training_examples,
-                 open('warm_up_experience_pool_seed%d_r%d_user.pkl' % (seed, successes), 'wb'))
+                open('warm_up_experience_pool_seed%d_r%d_user.pkl' % (seed, successes), 'wb'))
 
     agent.warm_start = 2
     res['success_rate'] = float(successes) / warm_start_run_epochs
