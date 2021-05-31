@@ -90,11 +90,11 @@ class ModelBasedSimulator(UserSimulator):
     def _sample_action(self):
         """ randomly sample a start action based on user goal """
 
-        self.state['diaact'] = random.choice(dialog_config.start_dia_acts.keys())
+        self.state['diaact'] = random.choice(list(dialog_config.start_dia_acts.keys()))
 
         # "sample" informed slots
         if len(self.goal['inform_slots']) > 0:
-            known_slot = random.choice(self.goal['inform_slots'].keys())
+            known_slot = random.choice(list(self.goal['inform_slots'].keys()))
             self.state['inform_slots'][known_slot] = self.goal['inform_slots'][known_slot]
 
             if 'moviename' in self.goal['inform_slots'].keys():  # 'moviename' must appear in the first user turn
@@ -159,8 +159,8 @@ class ModelBasedSimulator(UserSimulator):
         dis_idx = 0
 
         for iter_batch in range(num_batches):
-            for iter in range(len(self.training_examples) / (batch_size)):
-                batch = [random.choice(self.training_examples) for i in range(batch_size)]
+            for iter in range(len(self.training_examples) // (batch_size)):
+                batch = [random.choice(list(self.training_examples)) for i in range(batch_size)]
                 np_batch = []
                 for x in range(6):
                     v = []
@@ -193,7 +193,7 @@ class ModelBasedSimulator(UserSimulator):
         self.total_loss_for_ge = 0
         dis_idx = 0
         for iter_batch in range(num_batches):
-            batch = [random.choice(self.training_examples) for i in range(batch_size)]
+            batch = [random.choice(list(self.training_examples)) for i in range(batch_size)]
             np_batch = []
             for x in range(6):
                 v = []
@@ -257,13 +257,14 @@ class ModelBasedSimulator(UserSimulator):
 
         if action['diaact'] == 'inform':
             if len(action['inform_slots'].keys()) > 0:
-                slots = action['inform_slots'].keys()[0]
+                slots = list(action['inform_slots'].keys())[0]
                 if slots in self.sample_goal['inform_slots'].keys():
                     action['inform_slots'][slots] = self.sample_goal['inform_slots'][slots]
                 else:
                     action['inform_slots'][slots] = dialog_config.I_DO_NOT_CARE
         response_action = action
-
+        response_action['turn'] = self.state['turn']
+        self.add_nl_to_action(response_action)
         term = term[0][0] > 0.5
 
         reward = reward[0][0]
@@ -311,7 +312,7 @@ class ModelBasedSimulator(UserSimulator):
             # print act_slot_response
             if act_slot_response == action:
                 return i
-        raise Exception("action index not found")
+        # raise Exception("action index not found")
         return None
 
     def prepare_experience_replay(self, state_user, agent_action, state_user_next, reward, episode_over, user_action):
@@ -339,9 +340,13 @@ class ModelBasedSimulator(UserSimulator):
     def register_experience_replay_tuple(self, s_t, agent_a_t, s_tplus1, reward, term, user_a_t):
         """ Register feedback from the environment, to be stored as future training data """
 
+        # 1 * 192
         state_t_rep = self.prepare_state_representation(s_t)
+        # 1 * 58
         g = self.prepare_user_goal_representation(self.sample_goal)
+        # 1 * 250
         state_t_rep = np.hstack([state_t_rep, g])
+        # 19
         agent_action_t = agent_a_t
         user_action_t = user_a_t
 
@@ -365,6 +370,7 @@ class ModelBasedSimulator(UserSimulator):
         if len(self.training_examples) > self.max_buffer_size:
             self.training_examples = self.training_examples[-self.max_buffer_size:]
 
+    # 每个状态转换为向量
     def prepare_state_representation(self, state):
         """ Create the representation for each state """
 
