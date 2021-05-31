@@ -8,8 +8,8 @@ import pickle
 import copy
 import numpy as np
 
-from lstm import lstm
-from bi_lstm import biLSTM
+from .lstm import lstm
+from .bi_lstm import biLSTM
 
 
 class nlu:
