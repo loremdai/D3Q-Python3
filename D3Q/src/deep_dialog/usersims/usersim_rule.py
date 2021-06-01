@@ -1,9 +1,12 @@
 """
 Created on May 14, 2016
+
 a rule-based user simulator
+
 -- user_goals_first_turn_template.revised.v1.p: all goals
 -- user_goals_first_turn_template.part.movie.v1.p: moviename in goal.inform_slots
 -- user_goals_first_turn_template.part.nomovie.v1.p: no moviename in goal.inform_slots
+
 @author: xiul, t-zalipt
 """
 

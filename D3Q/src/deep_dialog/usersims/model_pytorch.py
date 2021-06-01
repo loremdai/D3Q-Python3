@@ -11,7 +11,6 @@ import numpy as np
 
 use_cuda = torch.cuda.is_available()
 
-
 class SimulatorModel(nn.Module):
     def __init__(
             self,
@@ -101,6 +100,7 @@ class SimulatorModel(nn.Module):
             au_pred = torch.max(self.au_pred_layer(h), 1)[1].cpu().data.numpy()
 
             return au_pred, r_pred, t_pred
+
 
     def save_model(self, model_path):
         torch.save(self.state_dict(), model_path)
@@ -266,6 +266,7 @@ class SimulatorModel(nn.Module):
             turn_onehot_rep
         ])
         return self.final_representation
+
 
     # {'request_slots': {'theater': 'UNK'}, 'turn': 0, 'speaker': 'user', 'inform_slots': {'numberofpeople': '3', 'moviename': '10 cloverfield lane'}, 'diaact': 'request'}
     def prepare_state_representation_for_RNN(self, state):

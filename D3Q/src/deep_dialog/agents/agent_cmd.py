@@ -27,7 +27,7 @@ class AgentCmd(Agent):
 
         user_action = state['user_action']
         # get input from the command line
-        print("Turn", user_action['turn'] + 1, "sys:"),
+        print("Turn", user_action['turn'] + 1, "sys:", )
         command = input()
 
         if self.agent_input_mode == 0:  # nl

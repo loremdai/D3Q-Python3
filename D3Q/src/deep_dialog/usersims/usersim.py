@@ -32,7 +32,7 @@ class UserSimulator:
         self.goal = random.choice(self.start_set)
         self.goal['request_slots']['ticket'] = 'UNK'
         episode_over, user_action = self._sample_action()
-        assert (episode_over != 1), ' but we just started'
+        assert ((episode_over != 1), ' but we just started')
         return user_action
 
     def next(self, system_action):

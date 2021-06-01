@@ -263,8 +263,8 @@ class ModelBasedSimulator(UserSimulator):
                 else:
                     action['inform_slots'][slots] = dialog_config.I_DO_NOT_CARE
         response_action = action
-        response_action['turn'] = self.state['turn']
-        self.add_nl_to_action(response_action)
+        # response_action['turn'] = self.state['turn']
+        # self.add_nl_to_action(response_action)
         term = term[0][0] > 0.5
 
         reward = reward[0][0]
