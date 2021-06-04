@@ -131,7 +131,7 @@ class Discriminator(nn.Module):
         neg_experiences = random.sample(self.user_model_experience_pool, batch_size)
 
         for pos_exp, neg_exp in zip(pos_experiences, neg_experiences):
-            loss += self.BCELoss(self.discriminate(pos_exp).squeeze(1), self.Variable(torch.ones(1))) + self.BCELoss(self.discriminate(neg_exp).squeeze(1), self.Variable(torch.zeros(1,1)))
+            loss += self.BCELoss(self.discriminate(pos_exp)[:], self.Variable(torch.ones(1))) + self.BCELoss(self.discriminate(neg_exp)[:], self.Variable(torch.zeros(1,1)))
 
         loss.backward()
         clip_grad_norm(self.parameters(), self.max_norm)
