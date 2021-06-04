@@ -34,19 +34,19 @@ class SimulatorModel(nn.Module):
             self.s_enc_layer = nn.Linear(state_size, hidden_size)
             self.a_enc_layer = nn.Linear(agent_action_size, hidden_size)
             self.shared_layers = nn.Sequential(nn.Linear(hidden_size * 2, hidden_size), nn.Tanh())
-            self.au_pred_layer = nn.Sequential(nn.Linear(hidden_size, user_action_size), nn.LogSoftmax())
+            self.au_pred_layer = nn.Sequential(nn.Linear(hidden_size, user_action_size))
             self.s_next_pred_layer = nn.Linear(hidden_size, state_size)
             self.r_pred_layer = nn.Linear(hidden_size, reward_size)
-            self.t_pred_layer = nn.Sequential(nn.Linear(hidden_size, termination_size), nn.Sigmoid())
+            self.t_pred_layer = nn.Sequential(nn.Linear(hidden_size, termination_size))
 
         # hyper parameters
         self.max_norm = 1
         lr = 0.001
 
         self.optimizer = optim.RMSprop(self.parameters(), lr=lr)
-        self.NLLLoss = nn.NLLLoss()
+        self.CrossEntropyLoss = nn.CrossEntropyLoss()
         self.MSELoss = nn.MSELoss()
-        self.BCELoss = nn.BCELoss()
+        self.BCEWithLogitsLoss = nn.BCEWithLogitsLoss()
 
         if use_cuda:
             self.cuda()
@@ -69,7 +69,7 @@ class SimulatorModel(nn.Module):
             s = self.Variable(torch.FloatTensor(s_t))
             a = self.Variable(torch.FloatTensor(self.one_hot(a_t, self.agent_action_size)))
             r = self.Variable(torch.FloatTensor(r_t))
-            t = self.Variable(torch.FloatTensor(np.int32(t_t).squeeze()))
+            t = self.Variable(torch.FloatTensor(np.int32(t_t)))
             au = self.Variable(torch.LongTensor(np.squeeze(ua_t)))
 
             h_s = self.s_enc_layer(s)
@@ -81,7 +81,7 @@ class SimulatorModel(nn.Module):
             au_pred = self.au_pred_layer(h)
 
             # loss = self.NLLLoss(au_pred, au) + self.MSELoss(r_pred, r) + self.CrossEntropyLoss(t_pred, t)
-            loss = self.NLLLoss(au_pred, au) + self.MSELoss(r_pred, r) + self.BCELoss(t_pred, t)
+            loss = self.CrossEntropyLoss(au_pred, au) + self.MSELoss(r_pred, r) + self.BCEWithLogitsLoss(t_pred, t)
             loss.backward()
             clip_grad_norm(self.parameters(), self.max_norm)
             self.optimizer.step()
