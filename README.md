@@ -20,10 +20,6 @@ main required packages:
 * seaborn
 * matplotlib
 
-If you are using conda as package/environment management tool, you can create a environment by the `spec-file.txt`.
-
-`$ conda create --name d3q --file spec-file.txt`
-
 ## Data
 
 all the data is under this folder: ./src/deep_dialog/data
@@ -99,7 +95,7 @@ all the data is under this folder: ./src/deep_dialog/data
 Basic DQN (DQN(1)):
 
 ```
-python run.py --agt 9 --usr 1
+python3 run.py --agt 9 --usr 1
 --max_turn 40 --movie_kb_path ./deep_dialog/data/movie_kb.1k.p --dqn_hidden_size 80 
 --experience_replay_pool_size 10000 --episodes 500 --simulation_epoch_size 1 --run_mode 3 
 --act_level 0 --slot_err_prob 0.00 --intent_err_prob 0.00 --batch_size 16 
@@ -112,7 +108,7 @@ python run.py --agt 9 --usr 1
 DQN(5):
 
 ```
-python run.py --agt 9 --usr 1
+python3 run.py --agt 9 --usr 1
 --max_turn 40 --movie_kb_path ./deep_dialog/data/movie_kb.1k.p --dqn_hidden_size 80 
 --experience_replay_pool_size 10000 --episodes 500 --simulation_epoch_size 1 --run_mode 3 
 --act_level 0 --slot_err_prob 0.00 --intent_err_prob 0.00 --batch_size 16 
@@ -125,7 +121,7 @@ python run.py --agt 9 --usr 1
 Train DQN Agent with k planning steps:
 
 ```
-python run.py --agt 9 --usr 1 
+python3 run.py --agt 9 --usr 1 
 --max_turn 40 --movie_kb_path ./deep_dialog/data/movie_kb.1k.p --dqn_hidden_size 80 
 --experience_replay_pool_size 10000 --episodes 500 --simulation_epoch_size 1 --run_mode 3 
 --act_level 0 --slot_err_prob 0.00 --intent_err_prob 0.00 --batch_size 16 
@@ -141,7 +137,7 @@ python run.py --agt 9 --usr 1
 DDQ(5):
 
 ```
-python run.py --agt 9 --usr 1 
+python3 run.py --agt 9 --usr 1 
 --max_turn 40 --movie_kb_path ./deep_dialog/data/movie_kb.1k.p --dqn_hidden_size 80 
 --experience_replay_pool_size 10000 --episodes 500 --simulation_epoch_size 1 --run_mode 3 
 --act_level 0 --slot_err_prob 0.00 --intent_err_prob 0.00 --batch_size 16 
@@ -153,7 +149,7 @@ python run.py --agt 9 --usr 1
 DDQ(k):
 
 ```
-python run.py --agt 9 --usr 1 
+python3 run.py --agt 9 --usr 1 
 --max_turn 40 --movie_kb_path ./deep_dialog/data/movie_kb.1k.p --dqn_hidden_size 80 
 --experience_replay_pool_size 10000 --episodes 500 --simulation_epoch_size 1 --run_mode 3 
 --act_level 0 --slot_err_prob 0.00 --intent_err_prob 0.00 --batch_size 16 
@@ -168,7 +164,7 @@ python run.py --agt 9 --usr 1
 D3Q(5):
 
 ```
-python run.py --agt 9 --usr 1 
+python3 run.py --agt 9 --usr 1 
 --max_turn 40 --movie_kb_path ./deep_dialog/data/movie_kb.1k.p --dqn_hidden_size 80 
 --experience_replay_pool_size 10000 --episodes 500 --simulation_epoch_size 1 --run_mode 3 
 --act_level 0 --slot_err_prob 0.00 --intent_err_prob 0.00 --batch_size 16 
@@ -180,7 +176,7 @@ python run.py --agt 9 --usr 1
 D3Q(k):
 
 ```
-python run.py --agt 9 --usr 1 
+python3 run.py --agt 9 --usr 1 
 --max_turn 40 --movie_kb_path ./deep_dialog/data/movie_kb.1k.p --dqn_hidden_size 80 
 --experience_replay_pool_size 10000 --episodes 500 --simulation_epoch_size 1 --run_mode 3 
 --act_level 0 --slot_err_prob 0.00 --intent_err_prob 0.00 --batch_size 16 
