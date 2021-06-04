@@ -141,7 +141,7 @@ class Discriminator(nn.Module):
     def train(self, batch_size=16, batch_num=0):
         loss = 0
         if batch_num == 0:
-            batch_num = int(min(len(self.user_experience_pool)/batch_size, len(self.user_model_experience_pool)/batch_size))
+            batch_num = min(len(self.user_experience_pool)//batch_size, len(self.user_model_experience_pool)//batch_size)
 
         for _ in range(batch_num):
             loss += self.train_single_batch(batch_size)
