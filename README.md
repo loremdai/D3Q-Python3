@@ -194,7 +194,7 @@ You can train the model by the example commands above or check the `example.sh`.
 This work focuses on training efficiency, therefore we evaluate the performance by learning curves. Please check the example code in the `draw_figure.py`.
 
 ```
-$ python draw_figure.py 
+$ python3 draw_figure.py 
 ```
 
 
