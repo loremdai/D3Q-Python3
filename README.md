@@ -193,10 +193,15 @@ You can train the model by the example commands above or check the `example.sh`.
 ## Evaluation
 This work focuses on training efficiency, therefore we evaluate the performance by learning curves. Please check the example code in the `draw_figure.py`.
 
-```
-$ python3 draw_figure.py 
+```bash
+python3 draw_figure.py
 ```
 
+Also, you can specific the path to the result file, for example:
+
+```
+python3 draw_figure.py --result_file ./deep_dialog/checkpoints/d3q_rnn_5_1/agt_10_performance_records.json
+```
 
 ## Reference
 
