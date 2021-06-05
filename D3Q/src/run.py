@@ -807,7 +807,7 @@ def run_episodes(count, status):
         for _ in range(20):
             simulation_epoch_for_pretrain_discriminator(3)
             discriminator_loss = dialog_manager.discriminator.train()
-            print("discriminator loss: {}" % discriminator_loss)
+            print("discriminator loss: {}".format(discriminator_loss))
 
     for episode in range(count):
         # warm_start_for_model = params['grounded']
@@ -891,7 +891,7 @@ def run_episodes(count, status):
                 print("+---------------------+")
                 discriminator_loss = dialog_manager.discriminator.train()
                 performance_records['discriminator_loss'][episode] = discriminator_loss
-                print("discriminator loss: {}" % discriminator_loss)
+                print("discriminator loss: {}".format(discriminator_loss))
 
             agent.predict_mode = False
             print("Simulation success rate %s, Ave reward %s, Ave turns %s, Best success rate %s" % (
