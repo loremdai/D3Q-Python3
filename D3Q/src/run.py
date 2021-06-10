@@ -328,7 +328,7 @@ user_sim.set_nlu_model(nlu_model)
 dialog_manager = DialogManager(agent, user_sim, user_sim_planning, act_set, slot_set, movie_kb, discriminator)
 
 
-# <editor-fold desc="Save Model Config">
+# <editor-fold desc="Save Model Configuration">
 if not os.path.isdir(params['write_model_dir']):
     os.makedirs(params['write_model_dir'])
 
