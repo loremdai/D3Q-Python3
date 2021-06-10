@@ -198,14 +198,14 @@ slot_set = text_to_dict(params['slot_set'])  # path to slot set
 # </editor-fold>
 
 
-# <editor-fold desc="Dialog Configuration">
+# <editor-fold desc="Set run_mode and auto_suggest">
 dialog_config.run_mode = params['run_mode']
 dialog_config.auto_suggest = params['auto_suggest']  # this param is for agent_cmd
 # </editor-fold>
 
 
-# <editor-fold desc="Parameters for Controller">
-########## Parameters for Controller ##########
+# <editor-fold desc="Parameters for Controller (Discriminator)">
+########## Parameters for Controller (Discriminator) ##########
 usersim_params = {}
 usersim_params['max_turn'] = max_turn
 usersim_params['slot_err_probability'] = params['slot_err_prob']
@@ -324,10 +324,8 @@ user_sim.set_nlu_model(nlu_model)
 # </editor-fold>
 
 
-# <editor-fold desc="Initialize Dialog Manager">
 ########## Initialize Dialog Manager ##########
 dialog_manager = DialogManager(agent, user_sim, user_sim_planning, act_set, slot_set, movie_kb, discriminator)
-# </editor-fold>
 
 
 # <editor-fold desc="Save Model Config">
