@@ -109,7 +109,7 @@ if __name__ == "__main__":
                         help='success rate threshold for user model')
     parser.add_argument('--agent_success_rate_threshold', dest='agent_success_rate_threshold', type=float, default=1,
                         help='success rate threshold for agent model')
-    parser.add_argument('--pretrain_discriminator', dest='pretrain_discriminator', type=int, default=0,
+    parser.add_argument('--pretrain_discriminator', dest='pretrain_discriminator', type=int, default=1,
                         help='whether to pretrain the discriminator')
     parser.add_argument('--discriminator_nn_type', dest='discriminator_nn_type', type=str, default='MLP',
                         help='NN model structure of the discriminator [MLP, RNN]')
@@ -150,6 +150,7 @@ def convertFile(originPath):
     print("successfully! ")
     return destiPath
 # </editor-fold>
+
 
 max_turn = params['max_turn']
 num_episodes = params['episodes']
@@ -468,6 +469,7 @@ def warm_start_simulation_preload():
 # </editor-fold>
 
 
+# Validation
 def simulation_epoch(simulation_epoch_size):
     successes = 0
     cumulative_reward = 0
@@ -790,15 +792,16 @@ def run_episodes(count, status):
 
     flash_flag = False
 
+    # 若无指定训练模型路径（训练模式） && 热启动==1，则激活热启动。
     if agt == 9 and params['trained_model_path'] == None and warm_start == 1:
         print('warm_start starting ...')
-        # warm_start_simulation_preload()
         warm_start_simulation()
         print(len(agent.experience_replay_pool))
-        # raw_input()
+
         pickle.dump(dialog_manager.user_actions_for_dump, open('user_actions.dump', 'wb'))
         print('warm_start finished, start RL training ...')
 
+    # 预训练鉴别器
     if agt == 9 and params['pretrain_discriminator']:
         print("pretraining the discriminator...")
         # TODO: use argument
@@ -807,15 +810,16 @@ def run_episodes(count, status):
             discriminator_loss = dialog_manager.discriminator.train()
             print("discriminator loss: {}".format(discriminator_loss))
 
+    # 循环num_episode次
     for episode in range(count):
         # warm_start_for_model = params['grounded']
         # simulation_epoch_size = planning_steps + 1
         if params['model_type'] == 'D3Q' and episode == 0:
-            simulation_epoch_with_gan_control_filter(3, True)
+            simulation_epoch_with_gan_control_filter(3, True)   # 使用世界模型
         else:
-            simulation_epoch_with_gan_control_filter(3, False)
+            simulation_epoch_with_gan_control_filter(3, False)  # 不使用世界模型
 
-        # update fixed target network
+        # 每轮episode结束后更新目标网络
         agent.dqn.update_fixed_target_network()
 
         print("Episode: %s" % (episode))
@@ -823,6 +827,7 @@ def run_episodes(count, status):
         dialog_manager.initialize_episode(True)
         episode_over = False
 
+        # 与环境交互
         while (not episode_over):
             episode_over, reward = dialog_manager.next_turn(record_training_data_for_user=False)
             cumulative_reward += reward
@@ -835,7 +840,7 @@ def run_episodes(count, status):
                     print("Failed Dialog!")
                 cumulative_turns += dialog_manager.state_tracker.turn_count
 
-        # simulation
+
         if agt == 9 and params['trained_model_path'] == None:
             agent.predict_mode = True
             user_sim_planning.predict_mode = True
@@ -861,10 +866,11 @@ def run_episodes(count, status):
             performance_records['ave_turns'][episode] = simulation_res['ave_turns']
             performance_records['ave_reward'][episode] = simulation_res['ave_reward']
 
-            # record the buffer size
+            # 记录buffer size
             performance_records['agent_user_buffer_size'][episode] = len(agent.experience_replay_pool)
             performance_records['agent_world_model_buffer_size'][episode] = len(agent.experience_replay_pool_from_model)
 
+            # 记录最佳指标
             if simulation_res['success_rate'] > best_res['success_rate']:
                 # best_model['model'] = copy.deepcopy(agent)
                 best_res['success_rate'] = simulation_res['success_rate']
@@ -872,9 +878,11 @@ def run_episodes(count, status):
                 best_res['ave_turns'] = simulation_res['ave_turns']
                 best_res['epoch'] = episode
 
+            # 训练智能体
             user_sim_planning.adversarial = False
             agent.train(batch_size, 1)
 
+            # 训练世界模型
             if params['train_world_model']:
                 print("+---------------------+")
                 print("|  Train World Model  |")
@@ -883,6 +891,7 @@ def run_episodes(count, status):
                 performance_records['world_model_loss'][episode] = user_sim_planning.train(batch_size, 1)
                 performance_records['world_model_buffer_size'][episode] = len(user_sim_planning.training_examples)
 
+            # 训练鉴别器
             if episode > 1 and params['model_type'] == 'D3Q' and params['train_discriminator']:
                 print("+---------------------+")
                 print("| Train Discriminator |")
@@ -893,27 +902,33 @@ def run_episodes(count, status):
 
             agent.predict_mode = False
             print("Simulation success rate %s, Ave reward %s, Ave turns %s, Best success rate %s" % (
-                performance_records['success_rate'][episode], performance_records['ave_reward'][episode],
-                performance_records['ave_turns'][episode], best_res['success_rate']))
+                performance_records['success_rate'][episode],
+                performance_records['ave_reward'][episode],
+                performance_records['ave_turns'][episode],
+                best_res['success_rate']))
+
+            # 每执行50轮循环，保存模型和performance_records
             path = '{}/dqn.model.epoch{}.ckpt'.format(params['write_model_dir'], episode)
             if params['save_model'] and episode % 50 == 0:
                 agent.save_dqn(path)
-
             save_performance_records(params['write_model_dir'], agt, performance_records)
 
+        # 打印该轮的评价指标
         print("Progress: %s / %s, Success rate: %s / %s Avg reward: %.2f Avg turns: %.2f" % (
             episode + 1, count, successes, episode + 1, float(cumulative_reward) / (episode + 1),
             float(cumulative_turns) / (episode + 1)))
+
+
+    # 打印总循环结束后的评价指标
     print("Success rate: %s / %s Avg reward: %.2f Avg turns: %.2f" % (
         successes, count, float(cumulative_reward) / count, float(cumulative_turns) / count))
     status['successes'] += successes
     status['count'] += count
 
-    # save the model
+    # 保存模型和performance_records
     path = '{}/dqn.model.epoch{}.ckpt'.format(params['write_model_dir'], '_final')
     if params['save_model']:
         agent.save_dqn(path)
-
     if agt == 9 and params['trained_model_path'] == None:
         save_performance_records(params['write_model_dir'], agt, performance_records)
 
